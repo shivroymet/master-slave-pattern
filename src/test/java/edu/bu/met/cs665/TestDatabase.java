@@ -29,7 +29,9 @@ public class TestDatabase {
   
   @Test
   public void testCacheHitInvalid() {
+    CacheStore.clearCache();
     CountryCode countryCode = new CountryCode();
+    CacheStore.clearCache();
     countryCode.setCountryCode("+1");
     countryCode.setName("United State of America");
     countryCode.setNameAbbreviation("US");
@@ -54,6 +56,7 @@ public class TestDatabase {
   
   @Test
   public void testCacheCapacityError() {
+    CacheStore.clearCache();
     CountryCode countryCode = new CountryCode();
     countryCode.setCountryCode("+1");
     countryCode.setName("United State of America");
@@ -107,6 +110,7 @@ public class TestDatabase {
   
   @Test
   public void testCacheInvalidError() throws Exception {
+    CacheStore.clearCache();
     CountryCode countryCode = new CountryCode();
     countryCode.setCountryCode("+1");
     countryCode.setName("United State of America");
@@ -115,6 +119,7 @@ public class TestDatabase {
     databaseAccessObject.putData(countryCode);
     TableObject tableObject = databaseAccessObject.getData("US");
     TableObject tableObject1 = CacheStore.getTableObject("US");
+    Assert.assertEquals(tableObject1,countryCode);
     Thread.sleep(7000);
     TableObject tableObject2 = CacheStore.getTableObject("US");
     Assert.assertNull(tableObject2);
@@ -123,6 +128,7 @@ public class TestDatabase {
   
   @Test
   public void testMasterSlaveSync() throws Exception {
+    CacheStore.clearCache();
     CountryCode countryCode = new CountryCode();
     countryCode.setCountryCode("+1");
     countryCode.setName("United State of America");

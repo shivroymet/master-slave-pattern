@@ -1,29 +1,79 @@
 
 | CS-665       | Software Design & Patterns |
 |--------------|----------------------------|
-| Name         | FIRST_NAME LAST_NAME       |
-| Date         | MM/DD/YYYY                 |
-| Course       | Fall / Spring / Summer     |
-| Assignment # |                            |
+| Name         | SHIVANI ROY                |
+| Date         | 05/03/2023                 |
+| Course       | Spring                     |
+| Assignment # | Final Project              |
 
 # Assignment Overview
-Please add a paragraph or two overviewing the objectives of the assignment.
+##### Master-Slave Database System and Caching
+The Java project is implementing two common technique for database management called 'Cache-Aside' Caching.<br>
+When a request for data comes in, the project first checks a cache to see if the data is already present there. If it is, the data is retrieved from the cache and returned to the caller.
+If the data is not present in the cache, the application  will retrieve it from the slave database, which is a secondary database used for read operations. If the data is still not found in the slave database, the application will retrieve it from the master database, which is the primary database used for read and write operations.<br>
+This process of checking the cache first, then the slave database, and finally the master database is known as a "fallback" or "cascading" mechanism, where your project attempts to retrieve data from the least expensive data source first and only resorts to more expensive data sources if the data is not available elsewhere.<br>
+This approach can help improve application performance by reducing the number of requests made to the master database, which can be slower due to the additional write operations it is responsible for.
+Your Java project appears to have a database architecture that uses a master-slave replication model, where one database server (the master) is responsible for receiving updates and modifications to the data, while other servers (the slaves) replicate this data for read-only purposes.
+
+
+
+### Implementation:
+
+##### Master-Slave Database:
+The implementation uses the observer pattern to keep the slave database up-to-date whenever there is a modification in the master database.
+Whenever an insert, update, or delete operation happens in the master database, the subject (the master database) notifies the observers (the slave database) of the change. The slave database then receives this notification and updates its own state to reflect the changes made in the master database. This ensures that the slave database always stays synchronized with the master database.
+
+
+##### Caching:
+
+
+LRU caching (Least Recently Used caching)
+- It is a caching technique used to manage data in a cache. It is a policy that determines which items in a cache should be evicted when the cache is full and new items need to be added.
+- In LRU caching, the least recently used items are evicted from the cache first, and the most recently used items are kept in the cache. When a new item needs to be added to the cache and the cache object is already full, the item that has been accessed the least recently is evicted to make room for the new item.
+- LRU caching is based on the principle of temporal locality, which suggests that items that have been accessed recently are more likely to be accessed again in the near future than items that have not been accessed for a long time.
+
+Cache-Aside:<div style="text-align:center">
+![img.png](img.png)
+    </div>
+- In the cache-aside caching strategy, the application first checks if the data is present in the cache. If the data is not present in the cache, the application retrieves the data from the database and stores it in the cache. Subsequent requests for the same data can then be served from the cache, reducing the need for expensive database queries.
+- If the data in the database changes, the application is responsible for invalidating the corresponding cache entry to ensure that stale data is not served from the cache. This strategy is called "cache-aside" because the application is responsible for managing the cache and the database separately.
+- To ensure that stale data is not served from the cache, applications use a technique called cache invalidation. Cache invalidation involves removing the expired cache entries and fetching the latest data from the database when subsequent requests are made. This ensures that the data served from the cache is always fresh and up-to-date.
+
 
 # GitHub Repository Link:
-https://github.com/{YOUR_USERNAME}/cs-665-assignment-{ASSIGNMENT_NUMBER}
+https://github.com/shivroymet/cs-665-final-project.git
 
 # Implementation Description 
 
 
 For each assignment, please answer the following:
 
-- Explain the level of flexibility in your implementation, including how new object types can
-be easily added or removed in the future.
-- Discuss the simplicity and understandability of your implementation, ensuring that it is
-easy for others to read and maintain.
-- Describe how you have avoided duplicated code and why it is important.
-- If applicable, mention any design patterns you have used and explain why they were
-chosen.
+- LEVEL OF FLEXIBILITY:
+  1. Code uses interfaces for observer and publisher. In the future if any update in master need to notified to some other source, it can easily be added.
+  2. Currently, we have two managers SlaveManager and MasterManager. If required more managers can be added which can implement Manager.java and even extend DbManager if required.
+  3. CountryCode is a model class used for storing objects in Database which extends TableObject. Similarly, Other Database Objects can be created by extending TableObject.
+- SIMPLICITY and UNDERSTANDABILITY:
+  1. The application is distributed in different packages. 
+     1. model: Contains all model classes 
+     2. dbconnection: Contains Connection and Database Manager packages. It also contains Observer and Publisher Classes. 
+     3. dao: Contains DatabaseAccessObject class 
+     4. cache: Contains Cache Store and TableObjectCache class which stores TableObject Cache
+   2. Appropriate naming convention for classes is used. Whitespace and indentation makes the code more readable.
+   3. The code is properly documented using javadoc.
+- REDUNDANCY and MAINTENANCE:
+  1. The code used Object-Oriented Programming Concepts like Inheritance and Realization to avoid duplicate code.
+  2. DbManager is an abstract class that implements Manager. In this class all the common code blocks has been included to avoid code duplicity in MasterManager and SlaveManager classes.
+  3. The new classes of observers, publishers and managers can easily be added and removed because of realization.
+- DESIGN PATTERNS:
+  1. Singleton Pattern: MasterConnection.java, SlaveConnection.java, SlaveObserver.java, SlavePublisher.java, CacheStore.java
+     1. It allows to create a single instances of all the mentioned classes
+  2. Observer Pattern: 
+     1. When any insert, update, or delete operation happens in the master database, the observer pattern is used to automatically notify all the slave observers that a change has occurred. This is achieved by registering the SlaveObserver as observers with the SlavePublisher. Whenever a change occurs in Master DB, the MasterManager calls SlavePublisher to publish the change which in turn notifies each of the registered observers, which in this case is the SlaveObserver, to notify them of the change.
+     2. This enables a database architecture that uses a master-slave replication model, where one database server (the master) is responsible for receiving updates and modifications to the data, while other servers (the slaves) replicate this data for read-only purposes.
+  3. Caching Pattern:
+     1. It has a cache object (TableObjectCache) which has a map to store all cached objects which is managed by CacheStore.
+     2. When data is requested, first check if it's present in the cache. If it's not present, fetch it from the data source and store it in the cache for future requests. 
+     3. When data is updated in the data source, remove the corresponding data from the cache using the Cache-Aside policy so that it can be fetched from the data source again.
 
 
 # Maven Commands
@@ -50,11 +100,11 @@ mvn clean compile
 
 
 ## JUnit Tests
-JUnit is a popular testing framework for Java. JUnit tests are automated tests that are written to verify that the behavior of a piece of code is as expected.
+JUnit is a popular testing framework for Java. JUnit test are automated tests that are written to verify that the behavior of a piece of code is as expected.
 
 In JUnit, tests are written as methods within a test class. Each test method tests a specific aspect of the code and is annotated with the @Test annotation. JUnit provides a range of assertions that can be used to verify the behavior of the code being tested.
 
-JUnit tests are executed automatically and the results of the tests are reported. This allows developers to quickly and easily check if their code is working as expected, and make any necessary changes to fix any issues that are found.
+JUnit test are executed automatically and the results of the tests are reported. This allows developers to quickly and easily check if their code is working as expected, and make any necessary changes to fix any issues that are found.
 
 The use of JUnit tests is an important part of Test-Driven Development (TDD), where tests are written before the code they are testing is written. This helps to ensure that the code is written in a way that is easily testable and that all required functionality is covered by tests.
 

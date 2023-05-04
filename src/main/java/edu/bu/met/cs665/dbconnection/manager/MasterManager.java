@@ -8,8 +8,10 @@
 
 package edu.bu.met.cs665.dbconnection.manager;
 
+import edu.bu.met.cs665.cache.CacheStore;
 import edu.bu.met.cs665.dbconnection.SlavePublisher;
 import edu.bu.met.cs665.dbconnection.connection.MasterConnection;
+import edu.bu.met.cs665.model.CountryCode;
 import edu.bu.met.cs665.model.TableObject;
 
 public class MasterManager extends DbManager implements Manager {
@@ -33,6 +35,8 @@ public class MasterManager extends DbManager implements Manager {
   public boolean updateDb(TableObject tableObject) {
     boolean isUpdated = super.updateDb(tableObject);
     if (isUpdated) {
+      CountryCode countryCode = (CountryCode) tableObject;
+      CacheStore.flushCache(countryCode.getName());
       SlavePublisher.getInstance().sendUpdate(tableObject, "Update");
     }
     return isUpdated;
