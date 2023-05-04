@@ -29,6 +29,10 @@ public abstract class DbManager implements Manager {
   
   Gson gson = new Gson();
   
+  public Connection getConnection() {
+    return connection;
+  }
+  
   /**
    * Connects to Database.
    */

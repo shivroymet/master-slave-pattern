@@ -10,6 +10,8 @@ package edu.bu.met.cs665;
 
 import edu.bu.met.cs665.cache.CacheStore;
 import edu.bu.met.cs665.dao.DatabaseAccessObject;
+import edu.bu.met.cs665.dbconnection.connection.SlaveConnection;
+import edu.bu.met.cs665.dbconnection.manager.DbManager;
 import edu.bu.met.cs665.dbconnection.manager.MasterManager;
 import edu.bu.met.cs665.dbconnection.manager.SlaveManager;
 import edu.bu.met.cs665.model.CountryCode;
@@ -18,6 +20,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import java.io.FileWriter;
 
 public class TestDatabase {
   
@@ -119,7 +122,7 @@ public class TestDatabase {
     databaseAccessObject.putData(countryCode);
     TableObject tableObject = databaseAccessObject.getData("US");
     TableObject tableObject1 = CacheStore.getTableObject("US");
-    Assert.assertEquals(tableObject1,countryCode);
+    Assert.assertEquals(tableObject1, countryCode);
     Thread.sleep(7000);
     TableObject tableObject2 = CacheStore.getTableObject("US");
     Assert.assertNull(tableObject2);
@@ -142,6 +145,25 @@ public class TestDatabase {
     slaveManager.connect();
     TableObject tableObject1 = slaveManager.readFromDb("US");
     Assert.assertEquals(tableObject1, tableObject);
+  }
+  
+  @Test
+  public void testMasterSlaveFallback() throws Exception {
+    CacheStore.clearCache();
+    CountryCode countryCode = new CountryCode();
+    countryCode.setCountryCode("+1");
+    countryCode.setName("United State of America");
+    countryCode.setNameAbbreviation("US");
+    DatabaseAccessObject databaseAccessObject = new DatabaseAccessObject();
+    databaseAccessObject.putData(countryCode);
+    FileWriter myWriter =
+        new FileWriter(SlaveConnection.getInstance().getConnectionProperties().getFilename());
+    myWriter.write("");
+    myWriter.close();
+    databaseAccessObject.getData("US");
+    MasterManager manager = new MasterManager();
+    DbManager manager1 = (DbManager) databaseAccessObject.getManager();
+    Assert.assertEquals(manager.getConnection(), manager1.getConnection());
   }
   
   
