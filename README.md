@@ -13,9 +13,7 @@ This project implements 'Cache-Aside' Caching, a widely used database management
 The requested data is checked if it is already present in the cache object.
 If so, the data is retrieved from the cache and returned to the caller. Else, the data is fetched from the slave database,  which is a read-only database. If the data is still not present in the slave database, the application will then retrieve the data from the master database, which is the main database used for read-and-write operations.
 
-This process of checking the cache first, followed by the slave database, and finally, the master database is known as a "fallback" or "cascading" mechanism. In this mechanism, the data is tried to retrieve from the least expensive data source first and only resorts to more expensive data sources if the data is not available elsewhere.
-
-This approach helps improve application performance by reducing the number of requests made to the master database, which can be slower due to the additional write operations it is responsible for.
+This process of checking the cache first, followed by the slave database, and finally, the master database is known as a "fallback" or "cascading" mechanism. In this mechanism, the data is tried to retrieve from the least expensive data source first and only resorts to more expensive data sources if the data is not available elsewhere. This approach helps improve application performance by reducing the number of requests made to the master database, which can be slower due to the additional write operations it is responsible for.
 
 This project uses a master-slave replication model, where one database server (the master) receives updates and modifications to the data while other servers (the slaves) replicate this data for read-only purposes.
 
@@ -52,8 +50,8 @@ https://github.com/shivroymet/cs-665-final-project.git
 For each assignment, please answer the following:
 
 - LEVEL OF FLEXIBILITY:
-  1. Code uses interfaces for observer and publisher. In the future if any update in master need to notified to some other source, it can easily be added.
-  2. Currently, we have two managers SlaveManager and MasterManager. If required more managers can be added which can implement Manager.java and even extend DbManager if required.
+  1. Code uses interfaces for the observer and publisher. In the future, if any update in the master needs to be notified to some other source, it can easily be added.
+  2. Currently, we have two managers SlaveManager and MasterManager. If required, more managers can be added which can implement Manager.java and even extend DbManager.
   3. CountryCode is a model class used for storing objects in Database which extends TableObject. Similarly, Other Database Objects can be created by extending TableObject.
 - SIMPLICITY and UNDERSTANDABILITY:
   1. The application is distributed in different packages. 
@@ -61,17 +59,17 @@ For each assignment, please answer the following:
      2. dbconnection: Contains Connection and Database Manager packages. It also contains Observer and Publisher Classes. 
      3. dao: Contains DatabaseAccessObject class 
      4. cache: Contains Cache Store and TableObjectCache class which stores TableObject Cache
-   2. Appropriate naming convention for classes is used. Whitespace and indentation makes the code more readable.
+   2. Appropriate naming conventions for classes are used. In addition, whitespace and indentation make the code more readable.
    3. The code is properly documented using javadoc.
 - REDUNDANCY and MAINTENANCE:
-  1. The code used Object-Oriented Programming Concepts like Inheritance and Realization to avoid duplicate code.
-  2. DbManager is an abstract class that implements Manager. In this class all the common code blocks has been included to avoid code duplicity in MasterManager and SlaveManager classes.
-  3. The new classes of observers, publishers and managers can easily be added and removed because of realization.
+  1. The code uses Object-Oriented Programming concepts like Inheritance and Realization to avoid redundant code.
+  2. DbManager is an abstract class that implements Manager. In this class, all the common code blocks have been included to avoid code redundancy in MasterManager and SlaveManager classes.
+  3. The new classes of observers, publishers, and managers can easily be added and removed because of realization.
 - DESIGN PATTERNS:
   1. Singleton Pattern: MasterConnection.java, SlaveConnection.java, SlaveObserver.java, SlavePublisher.java, CacheStore.java
-     1. It allows to create a single instances of all the mentioned classes
+     1. It allows creating a single instance of all the mentioned classes
   2. Observer Pattern: 
-     1. When any insert, update, or delete operation happens in the master database, the observer pattern is used to automatically notify all the slave observers that a change has occurred. This is achieved by registering the SlaveObserver as observers with the SlavePublisher. Whenever a change occurs in Master DB, the MasterManager calls SlavePublisher to publish the change which in turn notifies each of the registered observers, which in this case is the SlaveObserver, to notify them of the change.
+     1. When any insert, update, or delete operation happens in the master database, the observer pattern is used to automatically notify all the slave observers that a change has occurred. This is achieved by registering the SlaveObserver as observers with the SlavePublisher. Then, whenever a change occurs in Master DB, the MasterManager calls SlavePublisher to publish the change, which in turn notifies each of the registered observers, which in this case is the SlaveObserver, to notify them of the change.
      2. This enables a database architecture that uses a master-slave replication model, where one database server (the master) is responsible for receiving updates and modifications to the data, while other servers (the slaves) replicate this data for read-only purposes.
   3. Caching Pattern:
      1. It has a cache object (TableObjectCache) which has a map to store all cached objects which is managed by CacheStore.
