@@ -8,36 +8,39 @@
 
 # Assignment Overview
 ##### Master-Slave Database System and Caching
-The Java project is implementing two common technique for database management called 'Cache-Aside' Caching.<br>
-When a request for data comes in, the project first checks a cache to see if the data is already present there. If it is, the data is retrieved from the cache and returned to the caller.
-If the data is not present in the cache, the application  will retrieve it from the slave database, which is a secondary database used for read operations. If the data is still not found in the slave database, the application will retrieve it from the master database, which is the primary database used for read and write operations.<br>
-This process of checking the cache first, then the slave database, and finally the master database is known as a "fallback" or "cascading" mechanism, where your project attempts to retrieve data from the least expensive data source first and only resorts to more expensive data sources if the data is not available elsewhere.<br>
-This approach can help improve application performance by reducing the number of requests made to the master database, which can be slower due to the additional write operations it is responsible for.
-Your Java project appears to have a database architecture that uses a master-slave replication model, where one database server (the master) is responsible for receiving updates and modifications to the data, while other servers (the slaves) replicate this data for read-only purposes.
+This project implements 'Cache-Aside' Caching, a widely used database management technique.
+
+The requested data is checked if it is already present in the cache object.
+If so, the data is retrieved from the cache and returned to the caller. Else, the data is fetched from the slave database,  which is a read-only database. If the data is still not present in the slave database, the application will then retrieve the data from the master database, which is the main database used for read-and-write operations.
+
+This process of checking the cache first, followed by the slave database, and finally, the master database is known as a "fallback" or "cascading" mechanism. In this mechanism, the data is tried to retrieve from the least expensive data source first and only resorts to more expensive data sources if the data is not available elsewhere.
+
+This approach helps improve application performance by reducing the number of requests made to the master database, which can be slower due to the additional write operations it is responsible for.
+
+This project uses a master-slave replication model, where one database server (the master) receives updates and modifications to the data while other servers (the slaves) replicate this data for read-only purposes.
 
 
 
 ### Implementation:
 
 ##### Master-Slave Database:
-The implementation uses the observer pattern to keep the slave database up-to-date whenever there is a modification in the master database.
-Whenever an insert, update, or delete operation happens in the master database, the subject (the master database) notifies the observers (the slave database) of the change. The slave database then receives this notification and updates its own state to reflect the changes made in the master database. This ensures that the slave database always stays synchronized with the master database.
+This implementation uses the observer pattern to keep the slave database up-to-date whenever there is a modification in the master database. Whenever an insert, update, or delete operation happens in the master database, the subject (the master database) notifies the observers (the slave database) of the change. The slave database then receives this notification and updates its state to reflect the changes made in the master database. This process ensures that the slave database stays synchronized with the master database.
 
 
 ##### Caching:
 
 
 LRU caching (Least Recently Used caching)
-- It is a caching technique used to manage data in a cache. It is a policy that determines which items in a cache should be evicted when the cache is full and new items need to be added.
+- It is a caching technique used to manage data in a cache. A policy determines which items in a cache should be evicted when the cache is full and new items need to be added.
 - In LRU caching, the least recently used items are evicted from the cache first, and the most recently used items are kept in the cache. When a new item needs to be added to the cache and the cache object is already full, the item that has been accessed the least recently is evicted to make room for the new item.
-- LRU caching is based on the principle of temporal locality, which suggests that items that have been accessed recently are more likely to be accessed again in the near future than items that have not been accessed for a long time.
+- LRU caching is based on the principle of temporal locality, which suggests that items accessed recently are more likely to be reaccessed in the near future than items that have not been accessed for a long time.
 
 Cache-Aside:<div style="text-align:center">
 ![img.png](img.png)
     </div>
-- In the cache-aside caching strategy, the application first checks if the data is present in the cache. If the data is not present in the cache, the application retrieves the data from the database and stores it in the cache. Subsequent requests for the same data can then be served from the cache, reducing the need for expensive database queries.
-- If the data in the database changes, the application is responsible for invalidating the corresponding cache entry to ensure that stale data is not served from the cache. This strategy is called "cache-aside" because the application is responsible for managing the cache and the database separately.
-- To ensure that stale data is not served from the cache, applications use a technique called cache invalidation. Cache invalidation involves removing the expired cache entries and fetching the latest data from the database when subsequent requests are made. This ensures that the data served from the cache is always fresh and up-to-date.
+- In the cache-aside caching strategy, the application first checks if the data is present in the cache. If the data is not in the cache, the application retrieves it from the database and stores it in the cache. Subsequent requests for the same data can then be served from the cache, reducing the need for expensive database queries.
+- If the data in the database changes, the application is responsible for invalidating the corresponding cache entry to ensure that stale data is not retrieved from the cache. This strategy is called "cache-aside" because the application manages the cache and the database separately.
+- A cache invalidation technique is used to ensure that stale data is not retrieved from the cache. Cache invalidation involves removing the expired cache entries and fetching the latest data from the database when subsequent requests are made. This process ensures that the data served from the cache is always fresh and up-to-date.
 
 
 # GitHub Repository Link:
