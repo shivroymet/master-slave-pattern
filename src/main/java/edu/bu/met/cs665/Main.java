@@ -21,7 +21,7 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class Main {
   
-  private final static Logger logger = Logger.getLogger(Main.class);
+  private static final Logger logger = Logger.getLogger(Main.class);
   
   /**
    * A main method to run examples.

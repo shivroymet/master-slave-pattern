@@ -10,12 +10,12 @@ package edu.bu.met.cs665.cache;
 
 import edu.bu.met.cs665.model.CountryCode;
 import edu.bu.met.cs665.model.TableObject;
-import org.apache.log4j.Logger;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 public class CacheStore {
   
-  private final static Logger logger = Logger.getLogger(CacheStore.class);
+  private static final Logger logger = Logger.getLogger(CacheStore.class);
   
   static TableObjectCache cache;
   

@@ -38,22 +38,22 @@ public class SlaveObserver implements Observer {
     logger.info("Notification received");
     this.publisher = (SlavePublisher) publisher;
     SlaveManager slaveManager = new SlaveManager();
-    try{
-    slaveManager.connect();
-    switch (this.publisher.getOperation()) {
-      case "Update":
-        slaveManager.updateDb(this.publisher.getTableObject());
-        break;
-      case "Insert":
-        slaveManager.writeToDb(this.publisher.getTableObject());
-        break;
-      case "Delete":
-        slaveManager.deleteDb(this.publisher.getTableObject());
-        break;
-      default:
-        break;
-    }
-    }catch(Exception e){
+    try {
+      slaveManager.connect();
+      switch (this.publisher.getOperation()) {
+        case "Update":
+          slaveManager.updateDb(this.publisher.getTableObject());
+          break;
+        case "Insert":
+          slaveManager.writeToDb(this.publisher.getTableObject());
+          break;
+        case "Delete":
+          slaveManager.deleteDb(this.publisher.getTableObject());
+          break;
+        default:
+          break;
+      }
+    } catch (Exception e) {
       logger.error(e);
     }
     

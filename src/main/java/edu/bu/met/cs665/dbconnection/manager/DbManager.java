@@ -44,11 +44,11 @@ public abstract class DbManager implements Manager {
       if (!myObj.exists()) {
         this.createFile(this.connection.getConnectionProperties().getFilename());
         this.isConnected = true;
-        logger.info("Connected to "+this.connection.getClass().getSimpleName());
+        logger.info("Connected to " + this.connection.getClass().getSimpleName());
       } else if (myObj.exists()) {
         if (i < 99) {  // to simulate connection failure
           this.isConnected = true;
-          logger.info("Connected to "+this.connection.getClass().getSimpleName());
+          logger.info("Connected to " + this.connection.getClass().getSimpleName());
         } else {
           this.isConnected = false;
           throw new ConnectException();
@@ -242,7 +242,7 @@ public abstract class DbManager implements Manager {
    * Writes data to file.
    *
    * @param buffer string buffer
-   * @throws IOException
+   * @throws IOException IOException
    */
   void writeToFile(StringBuffer buffer) throws IOException {
     String fileContents = buffer.toString();
